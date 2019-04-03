@@ -43,3 +43,5 @@ NAME = 'name'
 WAREHOUSE_PRODUCT_ID = 'warehouse_product_id'
 STATUS = 'status'
 DATE_RECEIVED = 'date_received'
+
+TOTAL_COST = 'total_cost'
