@@ -1,6 +1,6 @@
-admin_query_1 = "select p.product_id, p.product_name, count(*) from warehouse as w, warehouse_product as wp, " \
-                "product as p where admin_id='{}' and wp.warehouse_id=w.warehouse_id and p.product_id=wp.product_id " \
-                "group by (p.product_id, p.product_name)"
+admin_query_1 = "select p.product_id, p.product_name, p.brand, p.category, count(*) from warehouse as w, " \
+                "warehouse_product as wp, product as p where admin_id='{}' and wp.warehouse_id=w.warehouse_id and " \
+                "p.product_id=wp.product_id group by (p.product_id, p.product_name, p.brand, p.category)"
 
 admin_query_2 = "select * from admin where admin_id='{}'"
 
@@ -20,5 +20,27 @@ admin_query_5 = "select ad1.street as admin_street, ad1.city as admin_city, ad1.
 
 admin_query_6 = "select v.vendor_id, v.vendor_name, po.invoice_id, po.product_id, po.price as total_cost, " \
                 "po.quantity, po.date_placed, p.product_name, p.brand, p.category, p.product_info, " \
-                "(po.price/po.quantity) as price from vendor v, placed_order po, product p " \
+                "(po.price/po.quantity) as price, po.payment_status from vendor v, placed_order po, product p " \
                 "where v.vendor_id=po.vendor_id and po.product_id=p.product_id and admin_id='{}'"
+
+admin_query_7 = "select * from product where product_id='{}'"
+
+admin_query_8 = "select v.vendor_id, v.vendor_name, po.invoice_id, po.product_id, po.price as total_cost, " \
+                "po.quantity, po.date_placed, p.product_name, p.brand, p.category, p.product_info, " \
+                "(po.price/po.quantity) as price, po.payment_status from vendor v, placed_order po, product p " \
+                "where v.vendor_id=po.vendor_id and po.product_id=p.product_id and admin_id='{}' and invoice_id='{}'"
+
+admin_query_9 = "select w.warehouse_id, w.name, a.address_id, a.street, a.city, a.state, a.zip_code from warehouse w, " \
+                "address a where w.address_id=a.address_id and admin_id='{}'"
+
+admin_query_10 = "select v.vendor_id, v.vendor_name, a.address_id, a.street, a.city, a.state, a.zip_code from " \
+                 "vendor v, address a where v.address_id=a.address_id and vendor_id='{}'"
+
+admin_query_11 = "select distinct(brand) from product where category='{}'"
+
+admin_query_12 = "select distinct(product_name) from product where category='{}' and brand='{}'"
+
+admin_query_13 = "select p.product_id, p.product_name, vp.vendor_product_id, v.vendor_id, v.vendor_name, " \
+                 "vp.quantity, vp.price from product p, vendor_product vp, vendor v where p.product_id=vp.product_id" \
+                 " and vp.vendor_id=v.vendor_id and p.category='{}' and p.brand='{}' and " \
+                 "p.product_name='{}'"

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+<ul class="nav nav-pills nav-justified">
+    <li><a href="http://127.0.0.1:5000/api/v1/warehouse/products/{{ id }}">Home</a></li>
+    <li class="active"><a href="#">Order</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
+</ul>
+<div class="container-fluid">
+    <h1>INVENTORY</h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <form>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Category</label>
+                    <select class="form-control" id="category">
+                        <option disabled selected value> -- select an option -- </option>
+                        <option value="laptop">Laptop</option>
+                        <option value="tv">TV</option>
+                        <option value="refrigerator">Refrigerator</option>
+                        <option value="phone">Phone</option>
+                        <option value="shoe">Shoe</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Brand</label>
+                    <select class="form-control" id="brand">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Product</label>
+                    <select class="form-control" id="product">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Vendor</label>
+                    <select class="form-control" id="vendor">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-6" style="text-align: center">
+            <h3>ADMIN: <a href="http://127.0.0.1:5000/api/v1/admin/info/{{ id }}">{{ admin_name }}</a></h3>
+            <p>Total Budget: {{ t_budget }}</p>
+            <p>Remaining Budget: {{ r_budget }}</p>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+
+    $(document).ready(function(){
+        $('#category').on('change', function() {
+            $('#brand').prop('selectedIndex',0);
+            $('#product').prop('selectedIndex',0);
+            $('#vendor').prop('selectedIndex', 0);
+            var category = $('#category').val();
+            $.ajax({
+                type: "GET",
+                url: 'http://127.0.0.1:5000/api/v1/brand/info/' + category,
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#brand'),
+                        '-- select an option --'
+                    )
+                }
+
+            })
+        });
+    });
+
+    $(document).ready(function(){
+        $('#brand').on('change', function() {
+            $('#product').prop('selectedIndex',0);
+            $('#vendor').prop('selectedIndex', 0);
+            var category = $('#category').val();
+            var brand = $('#brand').val();
+            $.ajax({
+                type: "GET",
+                url: 'http://127.0.0.1:5000/api/v1/product_drop_down/info/' + category + '/' + brand,
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#product'),
+                        '-- select an option --'
+                    )
+                }
+
+            })
+        });
+    });
+
+    $(document).ready(function(){
+        $('#product').on('change', function() {
+            $('#vendor').prop('selectedIndex', 0);
+            var category = $('#category').val();
+            var brand = $('#brand').val();
+            var product = $('#product').val();
+            $.ajax({
+                type: "GET",
+                url: 'http://127.0.0.1:5000/api/v1/vendor_drop_down/info/' + category + '/' + brand + '/' + product,
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#vendor'),
+                        '-- select an option --'
+                    )
+                }
+
+            })
+        });
+    });
+
+
+    var helpers =
+    {
+        buildDropdown: function(result, dropdown, emptyMessage)
+        {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '')
+            {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(k, v) {
+                    dropdown.append('<option value="' + v.id + '">' + v.name + '</option>');
+                });
+            }
+        }
+    }
+
+
+
+</script>
+
+</html>
