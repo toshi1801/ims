@@ -1,4 +1,6 @@
 import constants
+import datetime
+import uuid
 import sql_queries as sq
 import helpers
 from sqlalchemy import *
@@ -37,17 +39,48 @@ def fetch_order_home_info():
     return products
 
 
-def update_product_info():
+def fetch_admin_budget_info(admin_id):
+    info = {}
+    records = conn.execute(sq.admin_query_2.format(admin_id))
+    admin_info = helpers.generate_json_results(records)[0]
+    admin_name = admin_info[constants.ADMIN_NAME]
+
+    records = conn.execute(sq.admin_query_3.format(id=admin_id))
+    budget_info = helpers.generate_json_results(records)[0]
+
+    info['total_budget'] = float(budget_info[constants.BUDGET])
+    if budget_info['remaining_balance']:
+        info['remaining_budget'] = float(budget_info['remaining_balance'])
+        info['admin_name'] = str(admin_name)
+    else:
+        info['remaining_budget'] = float(budget_info[constants.BUDGET])
+        info['admin_name'] = str(admin_name)
+    return info
+
+
+def generate_order(admin_id, product_id, vendor_product_id, vendor_id, quantity, total_amount):
     """ Update vendor product info(quantity) after order is placed.
 
     :return:
     """
-    pass
+    invoice_id = uuid.uuid4().hex
+    records = conn.execute(sq.admin_query_14.format(admin_id))
+    warehouse_id = helpers.generate_json_results(records)[0]['warehouse_id']
+    payment_status = "in progress"
+    current_time = datetime.datetime.now()
+    date_placed = current_time.strftime("%Y-%m-%d %H:%M:%S")
+    conn.execute(sq.admin_query_15.format(invoice_id=invoice_id, admin_id=admin_id, vendor_id=vendor_id,
+                                          warehouse_id=warehouse_id, product_id=product_id,
+                                          payment_status=payment_status, price=total_amount, quantity=quantity,
+                                          date_placed=date_placed))
+    conn.execute(sq.admin_query_16.format(quantity, vendor_product_id))
+    return invoice_id
 
 
 def fetch_admin_info(admin_id):
     records = conn.execute(sq.admin_query_5.format(admin_id))
-    admin_info = {'admin_info': helpers.generate_json_results(records)[0]}
+    admin_info = helpers.generate_json_results(records)[0]
+    admin_info['dob'] = admin_info['dob'].strftime("%m/%d/%Y")
     return admin_info
 
 
@@ -101,8 +134,10 @@ def fetch_vendor_drop_down_info(category, brand, product_name):
     records = conn.execute(sq.admin_query_13.format(category, brand, product_name))
     vendors = helpers.generate_json_results(records)
     vendor_list = []
+    print(vendors)
     for vendor in vendors:
-        info = {"id": {"vendor_name": vendor['vendor_name'], "quantity": vendor['quantity'], "price": vendor['price']},
-                "name": vendor['vendor_name'] + " | Qt:" + str(vendor['quantity']) + " | Price:" + str(vendor['price'])}
+        val = vendor['vendor_name'] + " | Qt:" + str(vendor['quantity']) + " | Price:" + str(vendor['price'])
+        info = {"id": val + "|" + vendor['product_id'] + "|" + vendor['vendor_product_id'] + "|" + vendor['vendor_id'],
+                "name": val}
         vendor_list.append(info)
     return vendor_list

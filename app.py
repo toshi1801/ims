@@ -1,11 +1,12 @@
 import json
 import os
 import admin_api
-import requests
+from flask_login import LoginManager
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+login = LoginManager(app)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -29,8 +30,6 @@ def admin_home(admin_id):
                                id=admin_id,
                                t_budget=page_info['total_budget'],
                                r_budget=page_info['remaining_budget'])
-        # print(jsonify(page_info))
-        # return jsonify(page_info)
     except Exception as e:
         return str(e)
 
@@ -48,7 +47,7 @@ def order_home():
 def admin_info(admin_id):
     try:
         page_info = admin_api.fetch_admin_info(admin_id)
-        return jsonify(page_info)
+        return render_template('admin_info.html', id=admin_id, info=page_info)
     except Exception as e:
         return str(e)
 
@@ -67,7 +66,6 @@ def order_history(admin_id):
                     data[k] = v.strftime("%m/%d/%Y  %H:%M:%S")
             history.append(data)
         return render_template('history.html', id=admin_id, info=history)
-        # return jsonify(page_info)
     except Exception as e:
         return str(e)
 
@@ -77,7 +75,6 @@ def invoice_info(admin_id, invoice_id):
     try:
         page_info = admin_api.fetch_invoice_info(admin_id, invoice_id)
         return render_template('invoice.html', id=admin_id, invoice_id=invoice_id, info=page_info)
-        # return jsonify(page_info)
     except Exception as e:
         return str(e)
 
@@ -95,7 +92,22 @@ def product_info(product_id):
 def place_order(admin_id):
     try:
         if request.method == 'GET':
-            return render_template('order.html', id=admin_id)
+            page_info = admin_api.fetch_admin_budget_info(admin_id)
+            return render_template('order.html', id=admin_id, t_budget=page_info['total_budget'],
+                                   r_budget=page_info['remaining_budget'], admin_name=page_info['admin_name'])
+
+        elif request.method == 'POST':
+            vendor_info = request.form['vendor'].split('|')
+            product_id = vendor_info[3]
+            vendor_product_id = vendor_info[4]
+            vendor_id = vendor_info[5]
+            quantity = int(request.form['quantity'])
+            total_amount = float(request.form['total'])
+            invoice_id = admin_api.generate_order(admin_id, product_id, vendor_product_id,
+                                                  vendor_id, quantity, total_amount)
+            page_info = admin_api.fetch_invoice_info(admin_id, invoice_id)
+            return render_template('invoice.html', id=admin_id, invoice_id=invoice_id, info=page_info)
+
     except Exception as e:
         return str(e)
 

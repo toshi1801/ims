@@ -44,3 +44,11 @@ admin_query_13 = "select p.product_id, p.product_name, vp.vendor_product_id, v.v
                  "vp.quantity, vp.price from product p, vendor_product vp, vendor v where p.product_id=vp.product_id" \
                  " and vp.vendor_id=v.vendor_id and p.category='{}' and p.brand='{}' and " \
                  "p.product_name='{}'"
+
+admin_query_14 = "select warehouse_id from warehouse where admin_id='{}'"
+
+admin_query_15 = "insert into orders (invoice_id, admin_id, vendor_id, warehouse_id, product_id, payment_status, " \
+                 "price, quantity, date_placed) VALUES ('{invoice_id}', '{admin_id}', '{vendor_id}', " \
+                 "'{warehouse_id}', '{product_id}', '{payment_status}', {price}, {quantity}, '{date_placed}')"
+
+admin_query_16 = "update vendor_product set quantity=quantity-{} where vendor_product_id='{}'"

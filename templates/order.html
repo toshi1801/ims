@@ -20,14 +20,15 @@
     <li class="active"><a href="#">Order</a></li>
     <li><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
 </ul>
+
 <div class="container-fluid">
     <h1>INVENTORY</h1>
     <div class="row">
         <div class="col-lg-6">
-            <form>
+            <form action="http://127.0.0.1:5000/api/v1/place/order/6001" method="post">
                 <div class="form-group">
-                    <label for="exampleFormControlSelect1">Category</label>
-                    <select class="form-control" id="category">
+                    <label for="category_input">Category</label>
+                    <select class="form-control" name="category" id="category">
                         <option disabled selected value> -- select an option -- </option>
                         <option value="laptop">Laptop</option>
                         <option value="tv">TV</option>
@@ -37,23 +38,38 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlSelect1">Brand</label>
-                    <select class="form-control" id="brand">
+                    <label for="brand_input">Brand</label>
+                    <select class="form-control" id="brand" name="brand">
                         <option disabled selected value> -- select an option -- </option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlSelect1">Product</label>
-                    <select class="form-control" id="product">
+                    <label for="product_input">Product</label>
+                    <select class="form-control" id="product" name="product">
                         <option disabled selected value> -- select an option -- </option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exampleFormControlSelect1">Vendor</label>
-                    <select class="form-control" id="vendor">
+                    <label for="vendor_input">Vendor</label>
+                    <select class="form-control" id="vendor" name="vendor">
                         <option disabled selected value> -- select an option -- </option>
                     </select>
                 </div>
+
+                <div class="form-group row">
+                    <label for="quantity_input" class="col-sm-2 col-form-label col-form-label-sm">Quantity</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="quantity" name="quantity" placeholder="Quantity" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="total_output" class="col-sm-2 col-form-label">Total</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="total" name="total" placeholder="Total" readonly>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-2" id="submit" disabled>Place Order</button>
             </form>
         </div>
         <div class="col-lg-6" style="text-align: center">
@@ -82,7 +98,6 @@
                         '-- select an option --'
                     )
                 }
-
             })
         });
     });
@@ -102,7 +117,6 @@
                         '-- select an option --'
                     )
                 }
-
             })
         });
     });
@@ -122,8 +136,41 @@
                         '-- select an option --'
                     )
                 }
-
             })
+        });
+    });
+
+    $(document).ready(function(){
+        $('#vendor').on('change', function() {
+            $('#quantity').attr('disabled', false);
+        });
+    });
+
+    $(document).ready(function(){
+        $('#quantity').on('input', function() {
+            var category = $('#category').val();
+            var brand = $('#brand').val();
+            var product = $('#product').val();
+            var info = $('#vendor').val().split('|');
+            var vendorName = info[0].trim();
+            var availableQt = parseInt(info[1].split(':')[1].trim());
+            var qt = parseInt($('#quantity').val());
+            if (qt > availableQt) {
+                document.getElementById("total").value = 'total';
+                $('#submit').attr('disabled', true);
+                alert('Only ' + availableQt + ' available.')
+            }
+            else {
+                var price = parseFloat(info[2].split(':')[1].trim());
+                if (isNaN(qt * price)){
+                    document.getElementById("total").value = 'total';
+                    $('#submit').attr('disabled', true);
+                }
+                else {
+                    document.getElementById("total").value = qt * price;
+                    $('#submit').attr('disabled', false);
+                }
+            }
         });
     });
 
@@ -146,9 +193,6 @@
             }
         }
     }
-
-
-
 </script>
 
 </html>
