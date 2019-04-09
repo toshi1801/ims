@@ -24,7 +24,6 @@ def load_user_credentials():
     with open('user_info.txt', 'r') as file:
         data = json.load(file)
 
-    print(type(data), data)
     return data
 
 

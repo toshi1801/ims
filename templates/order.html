@@ -104,7 +104,7 @@
             var category = $('#category').val();
             $.ajax({
                 type: "GET",
-                url: 'http://127.0.0.1:5000/api/v1/brand/info/' + category,
+                url: '/api/v1/brand/info/' + category,
                 success: function (data) {
                     helpers.buildDropdown(data,
                         $('#brand'),
@@ -123,7 +123,7 @@
             var brand = $('#brand').val();
             $.ajax({
                 type: "GET",
-                url: 'http://127.0.0.1:5000/api/v1/product_drop_down/info/' + category + '/' + brand,
+                url: '/api/v1/product_drop_down/info/' + category + '/' + brand,
                 success: function (data) {
                     helpers.buildDropdown(data,
                         $('#product'),
@@ -142,7 +142,7 @@
             var product = $('#product').val();
             $.ajax({
                 type: "GET",
-                url: 'http://127.0.0.1:5000/api/v1/vendor_drop_down/info/' + category + '/' + brand + '/' + product,
+                url: '/api/v1/vendor_drop_down/info/' + category + '/' + brand + '/' + product,
                 success: function (data) {
                     helpers.buildDropdown(data,
                         $('#vendor'),

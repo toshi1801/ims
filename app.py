@@ -52,6 +52,10 @@ def index():
         user_id = session['username']
         if category == 'admin':
             return redirect('/api/v1/warehouse/products/{}'.format(user_id))
+        elif category == 'vendor':
+            return redirect('/api/v1/vendor/home/{}'.format(user_id))
+        else:
+            return 'Server Error.'
 
 
 @app.route('/api/v1/warehouse/products/<admin_id>', methods=['GET'])
@@ -205,17 +209,11 @@ def vendor_drop_down_info(category, brand, product_name):
         return str(e)
 
 
-@app.route('/api/v1/vendor/product_info/<vendor_id>', methods=['GET'])
-def vendor_product_info(vendor_id):
-    try:
-        page_info = vendor_api.fetch_vendor_product_info(vendor_id)
-        return jsonify(page_info)
-    except Exception as e:
-        return str(e)
-
 @app.route('/api/v1/vendor/payment_info/<vendor_id>', methods=['GET'])
 def vendor_payment_info(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
         return jsonify(page_info)
     except Exception as e:
@@ -225,6 +223,8 @@ def vendor_payment_info(vendor_id):
 @app.route('/api/v1/vendor/payment/<vendor_id>', methods=['GET'])
 def vendor_payment(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
         page_info = json.dumps(page_info)
         page_info = json.loads(page_info)
@@ -244,6 +244,8 @@ def vendor_payment(vendor_id):
 @app.route('/api/v1/payment/info/<vendor_id>', methods=['GET'])
 def payment_info(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
         return jsonify(page_info)
     except Exception as e:
@@ -253,6 +255,8 @@ def payment_info(vendor_id):
 @app.route('/api/v1/vendor/profile/<vendor_id>', methods=['GET'])
 def vendor_profile(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_info(vendor_id)
         page_info = json.dumps(page_info)
         page_info = json.loads(page_info)
@@ -274,6 +278,8 @@ def vendor_profile(vendor_id):
 @app.route('/api/v1/order/vendor_history/<vendor_id>', methods=['GET'])
 def vendor_order_history(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_order_history(vendor_id)
         history = []
         for info in page_info:
@@ -288,26 +294,23 @@ def vendor_order_history(vendor_id):
     except Exception as e:
         return str(e)
 
+
 @app.route('/api/v1/vendor_invoice/info/<vendor_id>/<invoice_id>', methods=['GET'])
 def vendor_invoice_info(vendor_id, invoice_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         page_info = vendor_api.fetch_vendor_invoice_info(vendor_id, invoice_id)
         return render_template('vendor_invoice.html', id=vendor_id, invoice_id=invoice_id, info=page_info)
     except Exception as e:
         return str(e)
 
 
-@app.route('/api/v1/add/products', methods=['GET'])
-def add_home():
-    try:
-        page_info = vendor_api.fetch_add_home_info()
-        return jsonify(page_info)
-    except Exception as e:
-        return str(e)
-
 @app.route('/api/v1/add_products/<vendor_id>', methods=['GET', 'POST'])
 def add_order(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         if request.method == 'GET':
             return render_template('vendor_order.html', id=vendor_id)
         elif request.method == 'POST':
@@ -327,9 +330,11 @@ def add_order(vendor_id):
         return str(e)
 
 
-@app.route('/api/v1/vendor/home/<vendor_id>', methods=['GET','POST'])
+@app.route('/api/v1/vendor/home/<vendor_id>', methods=['GET', 'POST'])
 def vendor_home(vendor_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
         if request.method == 'POST':
             product_info = request.form['product_id']
             product_id = int(product_info)
@@ -338,14 +343,12 @@ def vendor_home(vendor_id):
             if button == "update":
                 quantity_info = request.form['quantity']
                 quantity = int(quantity_info)
-                result = vendor_api.edit_product(vendor_id, product_id,
-                                                      quantity)
+                result = vendor_api.edit_product(vendor_id, product_id, quantity)
 
             else:
                 result = vendor_api.delete_product(vendor_id, product_id)
 
-
-            url = "/api/v1/vendor/home/"+str(vendor_id)
+            url = "/api/v1/vendor/home/" + str(vendor_id)
             return redirect(url)
 
         page_info = vendor_api.fetch_vendor_home_info(vendor_id)
