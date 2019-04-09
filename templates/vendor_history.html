@@ -18,8 +18,10 @@
 </head>
 <body>
 <ul class="nav nav-pills nav-justified">
-    <li><a href="http://127.0.0.1:5000/api/v1/warehouse/products/{{ id }}">Home</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/place/order/{{ id }}">Order</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/add_products/{{ id }}">Add Products</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
     <li class="active"><a href="#">History</a></li>
 </ul>
 
@@ -39,7 +41,7 @@
                 <tbody>
                 {% for item in info %}
                     <tr>
-                        <td><a href="http://127.0.0.1:5000/api/v1/invoice/info/{{ id }}/{{ item['invoice_id'] }}">{{ item['invoice_id'] }}</a></td>
+                        <td><a href="http://127.0.0.1:5000/api/v1/vendor_invoice/info/{{ id }}/{{ item['invoice_id'] }}">{{ item['invoice_id'] }}</a></td>
                         <td>{{ item['total_cost'] }}</td>
                         <td>{{ item['date_placed'] }}</td>
                         <td>{{ item['payment_status'] }}</td>

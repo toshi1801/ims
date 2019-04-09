@@ -129,7 +129,6 @@ def fetch_product_drop_down_info(category, brand):
         product_list.append(info)
     return product_list
 
-
 def fetch_vendor_drop_down_info(category, brand, product_name):
     records = conn.execute(sq.admin_query_13.format(category, brand, product_name))
     vendors = helpers.generate_json_results(records)
