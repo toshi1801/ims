@@ -46,11 +46,6 @@
                     <label for="category_input">Category</label>
                     <select class="form-control" name="category" id="category">
                         <option disabled selected value> -- select an option -- </option>
-                        <option value="laptop">Laptop</option>
-                        <option value="tv">TV</option>
-                        <option value="refrigerator">Refrigerator</option>
-                        <option value="phone">Phone</option>
-                        <option value="shoe">Shoe</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -79,7 +74,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mb-2" id="submit" disabled>Place Order</button>
+                <button type="submit" class="btn btn-primary mb-2" id="submit" disabled>Add Product</button>
             </form>
         </div>
     </div>
@@ -89,6 +84,18 @@
 <script>
 
     $(document).ready(function(){
+
+        $.ajax({
+            type: "GET",
+            url: '/api/v1/category_drop_down/info',
+            success: function (data) {
+                helpers.buildDropdown(data,
+                    $('#category'),
+                    '-- select an option --'
+                )
+            }
+        });
+
         $('#category').on('change', function() {
             $('#brand').prop('selectedIndex',0);
             $('#product').prop('selectedIndex',0);
