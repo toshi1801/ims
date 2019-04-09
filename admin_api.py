@@ -6,7 +6,7 @@ import helpers
 from sqlalchemy import *
 
 
-engine = create_engine('postgresql:///inventory_management_system')
+engine = create_engine('postgresql://nj2387:db_project_ims@34.73.21.127/proj1part2')
 conn = engine.connect()
 
 
