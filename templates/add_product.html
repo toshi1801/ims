@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">IMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="nav navbar-nav">
+                <li><a href="/api/v1/warehouse/products/{{ id }}">Home</a></li>
+                <li><a href="/api/v1/place/order/{{ id }}">Order</a></li>
+                <li><a href="/api/v1/order/history/{{ id }}">History</a></li>
+                <li class="active"><a href="#">Add Product</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <h1>INVENTORY</h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <form action="/api/v1/admin/add/product/{{ id }}" method="post">
+                <div class="form-group">
+                    <input type="radio" name="options" value="existing" id="existing" checked> Existing Category &nbsp &nbsp
+                    <input type="radio" name="options" value="new" id="new"> New Category
+                </div>
+                <div class="form-group">
+                    <label for="category_input_select">Category</label>
+                    <select class="form-control" id="category_select" name="category_select">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <input type="text" class="form-control form-control-sm" id="category_text" name="category_text" placeholder="Category">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="brand_input" class="col-sm-2 col-form-label col-form-label-sm">Brand</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="brand" name="brand" placeholder="Brand" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="product_input" class="col-sm-2 col-form-label">Product</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="product" name="product" placeholder="Product" required>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="info_input" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="info" name="info" placeholder="Description">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2" id="submit">Add Product</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+
+    $(document).ready(function () {
+
+        if ('{{ p_id }}') {
+            alert('Product Added Successfully.');
+        }
+
+        var radioValue = $("input[name='options']:checked").val();
+        if (radioValue === 'existing') {
+            $('#category_text').attr('disabled', true);
+            $('#category_select').prop('required', true);
+            $.ajax({
+                type: "GET",
+                url: '/api/v1/category_drop_down/info',
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#category_select'),
+                        '-- select an option --'
+                    )
+                }
+            })
+        }
+        $('input[type=radio][name=options]').change(function () {
+            var radioValue = $("input[name='options']:checked").val();
+            if (radioValue === 'existing') {
+                $('#category_text').attr('disabled', true);
+                $('#category_text').prop('required', false);
+                $('#category_text').val('');
+                $('#category_select').attr('disabled', false);
+                $('#category_select').prop('required', true);
+                $.ajax({
+                    type: "GET",
+                    url: '/api/v1/category_drop_down/info',
+                    success: function (data) {
+                        helpers.buildDropdown(data,
+                            $('#category_select'),
+                            '-- select an option --'
+                        )
+                    }
+                })
+            }
+            else if (radioValue === 'new') {
+                $('#category_select').attr('disabled', true);
+                $('#category_select').prop('required', false);
+                $('#category_text').attr('disabled', false);
+                $('#category_text').prop('required', true);
+                $('#category_select').prop('selectedIndex',0);
+            }
+        });
+    });
+
+
+    var helpers =
+    {
+        buildDropdown: function(result, dropdown, emptyMessage)
+        {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '')
+            {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(k, v) {
+                    dropdown.append('<option value="' + v.id + '">' + v.name + '</option>');
+                });
+            }
+        }
+    }
+</script>
+
+</html>

@@ -140,3 +140,19 @@ def fetch_vendor_drop_down_info(category, brand, product_name):
                 "name": val}
         vendor_list.append(info)
     return vendor_list
+
+
+def fetch_category_drop_down_info():
+    records = conn.execute(sq.admin_query_17)
+    categories = helpers.generate_json_results(records)
+    category_list = []
+    for category in categories:
+        info = {"id": category['category'], "name": category['category']}
+        category_list.append(info)
+    return category_list
+
+
+def add_new_product(category, brand, name, info):
+    product_id = uuid.uuid4().hex
+    conn.execute(sq.admin_query_18.format(product_id, name, brand, category, info))
+    return product_id

@@ -209,6 +209,48 @@ def vendor_drop_down_info(category, brand, product_name):
         return str(e)
 
 
+@app.route('/api/v1/category_drop_down/info', methods=['GET'])
+def category_drop_down_info():
+    try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
+        page_info = admin_api.fetch_category_drop_down_info()
+        return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/admin/add/product/<admin_id>', methods=['GET', 'POST'])
+def add_new_product(admin_id):
+    try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
+        if request.method == 'GET':
+            return render_template('add_product.html', id=admin_id, p_id='')
+
+        elif request.method == 'POST':
+            category = None
+            info = None
+
+            if 'category_select' in request.form:
+                category = request.form['category_select']
+            elif 'category_text' in request.form:
+                category = request.form['category_text']
+
+            if 'info' in request.form:
+                info = request.form['info']
+
+            brand = request.form['brand']
+            name = request.form['product']
+            product_id = admin_api.add_new_product(category, brand, name, info)
+            return render_template('add_product.html', id=admin_id, p_id=product_id)
+
+    except Exception as e:
+        return str(e)
+
+
 @app.route('/api/v1/vendor/payment_info/<vendor_id>', methods=['GET'])
 def vendor_payment_info(vendor_id):
     try:

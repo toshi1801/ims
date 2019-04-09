@@ -52,3 +52,8 @@ admin_query_15 = "insert into orders (invoice_id, admin_id, vendor_id, warehouse
                  "'{warehouse_id}', '{product_id}', '{payment_status}', {price}, {quantity}, '{date_placed}')"
 
 admin_query_16 = "update vendor_product set quantity=quantity-{} where vendor_product_id='{}'"
+
+admin_query_17 = "select distinct(category) from product"
+
+admin_query_18 = "insert into product (product_id, product_name, brand, category, product_info) " \
+                 "values ('{}','{}','{}','{}','{}')"
