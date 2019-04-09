@@ -1,26 +1,64 @@
 import json
 import os
+import hashlib
 import admin_api
-from flask_login import LoginManager
-from flask import Flask, jsonify, render_template, request
+import helpers
+from flask import Flask, jsonify, render_template, request, session, flash, redirect
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-login = LoginManager(app)
 
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+@app.route('/login', methods=['POST'])
+def login():
+
+    username = request.form['username']
+    password = request.form['password']
+    category = request.form['category']
+    session['username'] = username
+    pass_hash = hashlib.md5(password.encode())
+    session['password'] = pass_hash.hexdigest()
+    session['category'] = category
+
+    status, message = helpers.check_password(username, password, category)
+
+    if status:
+        session['logged_in'] = True
+    else:
+        flash(message)
+
+    return index()
+
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    session.pop('password', None)
+    session['logged_in'] = False
+    return redirect('/')
+
+
 @app.route("/")
-def hello():
-    return "Hello World!"
+def index():
+    if not session.get('logged_in'):
+        return render_template('landing.html')
+    else:
+        category = session['category']
+        user_id = session['username']
+        if category == 'admin':
+            return redirect('/api/v1/warehouse/products/{}'.format(user_id))
 
 
 @app.route('/api/v1/warehouse/products/<admin_id>', methods=['GET'])
 def admin_home(admin_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_admin_home_info(admin_id)
         page_info = json.dumps(page_info)
         page_info = json.loads(page_info)
@@ -37,6 +75,9 @@ def admin_home(admin_id):
 @app.route('/api/v1/order/products', methods=['GET'])
 def order_home():
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_order_home_info()
         return jsonify(page_info)
     except Exception as e:
@@ -46,6 +87,9 @@ def order_home():
 @app.route('/api/v1/admin/info/<admin_id>', methods=['GET'])
 def admin_info(admin_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_admin_info(admin_id)
         return render_template('admin_info.html', id=admin_id, info=page_info)
     except Exception as e:
@@ -55,6 +99,9 @@ def admin_info(admin_id):
 @app.route('/api/v1/order/history/<admin_id>', methods=['GET'])
 def order_history(admin_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_order_history(admin_id)
         history = []
         for info in page_info:
@@ -73,6 +120,9 @@ def order_history(admin_id):
 @app.route('/api/v1/invoice/info/<admin_id>/<invoice_id>', methods=['GET'])
 def invoice_info(admin_id, invoice_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_invoice_info(admin_id, invoice_id)
         return render_template('invoice.html', id=admin_id, invoice_id=invoice_id, info=page_info)
     except Exception as e:
@@ -82,6 +132,9 @@ def invoice_info(admin_id, invoice_id):
 @app.route('/api/v1/product/info/<product_id>', methods=['GET'])
 def product_info(product_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_product_info(product_id)
         return jsonify(page_info)
     except Exception as e:
@@ -91,6 +144,9 @@ def product_info(product_id):
 @app.route('/api/v1/place/order/<admin_id>', methods=['GET', 'POST'])
 def place_order(admin_id):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         if request.method == 'GET':
             page_info = admin_api.fetch_admin_budget_info(admin_id)
             return render_template('order.html', id=admin_id, t_budget=page_info['total_budget'],
@@ -115,6 +171,9 @@ def place_order(admin_id):
 @app.route('/api/v1/brand/info/<category>', methods=['GET'])
 def brand_info(category):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_brand_info(category)
         return jsonify(page_info)
     except Exception as e:
@@ -124,6 +183,9 @@ def brand_info(category):
 @app.route('/api/v1/product_drop_down/info/<category>/<brand>', methods=['GET'])
 def product_drop_down_info(category, brand):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_product_drop_down_info(category, brand)
         return jsonify(page_info)
     except Exception as e:
@@ -133,6 +195,9 @@ def product_drop_down_info(category, brand):
 @app.route('/api/v1/vendor_drop_down/info/<category>/<brand>/<product_name>', methods=['GET'])
 def vendor_drop_down_info(category, brand, product_name):
     try:
+        if not session.get('logged_in'):
+            return render_template('landing.html')
+
         page_info = admin_api.fetch_vendor_drop_down_info(category, brand, product_name)
         return jsonify(page_info)
     except Exception as e:

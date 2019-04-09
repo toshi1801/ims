@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/static/style.css" type="text/css">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--<title>Bloody Ashes</title>-->
+</head>
+
+{% block body %}
+{% if session['logged_in'] %}
+    You're already logged in :)
+{% else %}
+    <div class="login">
+        <div class="login-screen">
+            <div class="app-title">
+               <h1>IMS</h1>
+            </div>
+            <div class="login-form">
+                <form action="/login" method="POST">
+                    <div class="control-group">
+                        <label class="login-field-icon fui-user" for="login-name"></label>
+                       <input type="text" class="login-field" value="" placeholder="username" name="username">
+                    </div>
+                    <div class="control-group">
+                        <label class="login-field-icon fui-lock" for="login-pass"></label>
+                        <input type="password" class="login-field" value="" placeholder="password" name="password">
+                    </div>
+                    <div class="control-group">
+                        <label for="category_input"></label>
+                        <select class="form-control" name="category" id="category">
+                            <option value="vendor" selected>Vendor</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <input type="submit" value="Log in" class="btn btn-large btn-block">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--Flash messages-->
+    <div class="flash-message">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+{% endif %}
+{% endblock %}
+</html>
