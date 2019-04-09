@@ -98,8 +98,9 @@ def generate_vendor_order(product_id, vendor_id, quantity, price):
     vendor_product_id = uuid.uuid4().hex
     current_time = datetime.datetime.now()
     date_placed = current_time.strftime("%Y-%m-%d %H:%M:%S")
-    result = conn.execute(vsq.vendor_query_5.format(vendor_product_id=vendor_product_id, product_id=product_id, vendor_id=vendor_id, quantity=quantity, date_added=date_placed,price=price))
-    return result
+    if int(quantity)>0:
+        conn.execute(vsq.vendor_query_5.format(vendor_product_id=vendor_product_id, product_id=product_id, vendor_id=vendor_id, quantity=quantity, date_added=date_placed,price=price))
+    return
 
 def get_product_id(name, category, brand):
     records =conn.execute(vsq.vendor_query_11.format(category=category, product_name=name, brand=brand))
@@ -108,8 +109,9 @@ def get_product_id(name, category, brand):
     return product_id
 
 def edit_product(vendor_id, product_id, quantity):
-    records = conn.execute(vsq.vendor_query_12.format(vendor_id=vendor_id, product_id=product_id, quantity=quantity ))
-    return records
+    if int(quantity)>=0:
+        conn.execute(vsq.vendor_query_12.format(vendor_id=vendor_id, product_id=product_id, quantity=quantity ))
+    return 
 
 
 def delete_product(vendor_id, product_id):
