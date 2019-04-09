@@ -134,7 +134,6 @@ def fetch_vendor_drop_down_info(category, brand, product_name):
     records = conn.execute(sq.admin_query_13.format(category, brand, product_name))
     vendors = helpers.generate_json_results(records)
     vendor_list = []
-    print(vendors)
     for vendor in vendors:
         val = vendor['vendor_name'] + " | Qt:" + str(vendor['quantity']) + " | Price:" + str(vendor['price'])
         info = {"id": val + "|" + vendor['product_id'] + "|" + vendor['vendor_product_id'] + "|" + vendor['vendor_id'],
