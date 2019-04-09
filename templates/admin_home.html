@@ -26,8 +26,8 @@
         <div class="collapse navbar-collapse" id="navBar">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
-                <li><a href="http://127.0.0.1:5000/api/v1/place/order/{{ id }}">Order</a></li>
-                <li><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
+                <li><a href="/api/v1/place/order/{{ id }}">Order</a></li>
+                <li><a href="/api/v1/order/history/{{ id }}">History</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
@@ -53,7 +53,7 @@
             </table>
         </div>
         <div class="col-lg-6" style="text-align: center">
-            <h3>ADMIN: <a href="http://127.0.0.1:5000/api/v1/admin/info/{{ id }}">{{ admin_name }}</a></h3>
+            <h3>ADMIN: <a href="/api/v1/admin/info/{{ id }}">{{ admin_name }}</a></h3>
             <p>Total Budget: {{ t_budget }}</p>
             <p>Remaining Budget: {{ r_budget }}</p>
         </div>

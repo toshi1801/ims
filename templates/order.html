@@ -23,9 +23,9 @@
         </div>
         <div class="collapse navbar-collapse" id="navBar">
             <ul class="nav navbar-nav">
-                <li><a href="http://127.0.0.1:5000/api/v1/warehouse/products/{{ id }}">Home</a></li>
+                <li><a href="/api/v1/warehouse/products/{{ id }}">Home</a></li>
                 <li class="active"><a href="#">Order</a></li>
-                <li><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
+                <li><a href="/api/v1/order/history/{{ id }}">History</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
@@ -38,7 +38,7 @@
     <h1>INVENTORY</h1>
     <div class="row">
         <div class="col-lg-6">
-            <form action="http://127.0.0.1:5000/api/v1/place/order/6001" method="post">
+            <form action="/api/v1/place/order/6001" method="post">
                 <div class="form-group">
                     <label for="category_input">Category</label>
                     <select class="form-control" name="category" id="category">
@@ -86,7 +86,7 @@
             </form>
         </div>
         <div class="col-lg-6" style="text-align: center">
-            <h3>ADMIN: <a href="http://127.0.0.1:5000/api/v1/admin/info/{{ id }}">{{ admin_name }}</a></h3>
+            <h3>ADMIN: <a href="/api/v1/admin/info/{{ id }}">{{ admin_name }}</a></h3>
             <p>Total Budget: {{ t_budget }}</p>
             <p>Remaining Budget: {{ r_budget }}</p>
         </div>
