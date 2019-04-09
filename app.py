@@ -4,6 +4,7 @@ import hashlib
 import admin_api
 import helpers
 from flask import Flask, jsonify, render_template, request, session, flash, redirect
+import vendor_api
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -200,6 +201,160 @@ def vendor_drop_down_info(category, brand, product_name):
 
         page_info = admin_api.fetch_vendor_drop_down_info(category, brand, product_name)
         return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/vendor/product_info/<vendor_id>', methods=['GET'])
+def vendor_product_info(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_product_info(vendor_id)
+        return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+@app.route('/api/v1/vendor/payment_info/<vendor_id>', methods=['GET'])
+def vendor_payment_info(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
+        return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/vendor/payment/<vendor_id>', methods=['GET'])
+def vendor_payment(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
+        page_info = json.dumps(page_info)
+        page_info = json.loads(page_info)
+        return render_template('vendor_payment.html',
+                               type=page_info['type'],
+                               account_name=page_info['account_name'],
+                               account_number=page_info['account_number'],
+                               routing_number=page_info['routing_number'],
+                               paypal_id=page_info['paypal_id'],
+                               venmo_id=page_info['venmo_id'],
+                               vendor_name=page_info['vendor_name'],
+                               id=vendor_id)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/payment/info/<vendor_id>', methods=['GET'])
+def payment_info(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_payment_info(vendor_id)
+        return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/vendor/profile/<vendor_id>', methods=['GET'])
+def vendor_profile(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_info(vendor_id)
+        page_info = json.dumps(page_info)
+        page_info = json.loads(page_info)
+        return render_template('vendor_profile.html',
+                               vendor_id=page_info['vendor_id'],
+                               vendor_name=page_info['vendor_name'],
+                               mobile=page_info['mobile'],
+                               email=page_info['email'],
+                               address_id=page_info['address_id'],
+                               street=page_info['street'],
+                               city=page_info['city'],
+                               state=page_info['state'],
+                               zip=page_info['zip'],
+                               id=vendor_id)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/order/vendor_history/<vendor_id>', methods=['GET'])
+def vendor_order_history(vendor_id):
+    try:
+        page_info = vendor_api.fetch_vendor_order_history(vendor_id)
+        history = []
+        for info in page_info:
+            data = {}
+            for k, v in info.items():
+                if k in ['invoice_id', 'total_cost', 'payment_status']:
+                    data[k] = v
+                if k in ['date_placed']:
+                    data[k] = v.strftime("%m/%d/%Y  %H:%M:%S")
+            history.append(data)
+        return render_template('vendor_history.html', id=vendor_id, info=history)
+    except Exception as e:
+        return str(e)
+
+@app.route('/api/v1/vendor_invoice/info/<vendor_id>/<invoice_id>', methods=['GET'])
+def vendor_invoice_info(vendor_id, invoice_id):
+    try:
+        page_info = vendor_api.fetch_vendor_invoice_info(vendor_id, invoice_id)
+        return render_template('vendor_invoice.html', id=vendor_id, invoice_id=invoice_id, info=page_info)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/add/products', methods=['GET'])
+def add_home():
+    try:
+        page_info = vendor_api.fetch_add_home_info()
+        return jsonify(page_info)
+    except Exception as e:
+        return str(e)
+
+@app.route('/api/v1/add_products/<vendor_id>', methods=['GET', 'POST'])
+def add_order(vendor_id):
+    try:
+        if request.method == 'GET':
+            return render_template('vendor_order.html', id=vendor_id)
+        elif request.method == 'POST':
+            product_info = request.form['product'].split('|')
+            category_info = request.form['category'].split('|')
+            brand_info = request.form['brand'].split('|')
+            name = product_info[0]
+            category = category_info[0]
+            brand = brand_info[0]
+            quantity = int(request.form['quantity'])
+            price = float(request.form['price'])
+            product_id = vendor_api.get_product_id(name, category, brand)
+            result = vendor_api.generate_vendor_order(product_id, vendor_id,
+                                                  quantity, price)
+            return render_template('vendor_order.html', id=vendor_id)
+    except Exception as e:
+        return str(e)
+
+
+@app.route('/api/v1/vendor/home/<vendor_id>', methods=['GET','POST'])
+def vendor_home(vendor_id):
+    try:
+        if request.method == 'POST':
+            product_info = request.form['product_id']
+            product_id = int(product_info)
+
+            button = request.form['submit']
+            if button == "update":
+                quantity_info = request.form['quantity']
+                quantity = int(quantity_info)
+                result = vendor_api.edit_product(vendor_id, product_id,
+                                                      quantity)
+
+            else:
+                result = vendor_api.delete_product(vendor_id, product_id)
+
+
+            url = "/api/v1/vendor/home/"+str(vendor_id)
+            return redirect(url)
+
+        page_info = vendor_api.fetch_vendor_home_info(vendor_id)
+        page_info = json.dumps(page_info)
+        page_info = json.loads(page_info)
+        return render_template('vendor_home.html',
+                               products=json.dumps(page_info['products']),
+                               vendor_name=page_info['vendor_name'],
+                               id=vendor_id)
     except Exception as e:
         return str(e)
 

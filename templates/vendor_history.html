@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+
+
+</head>
+<body>
+
+    
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">IMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="nav navbar-nav">
+                <li><a href="/api/v1/vendor/home/{{ id }}">Home</a></li>
+                <li><a href="/api/v1/add_products/{{ id }}">Add Products</a></li>
+                <li><a href="/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+                <li><a href="/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+                <li class="active"><a href="#">History</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>    
+
+    
+<!-- 
+<ul class="nav nav-pills nav-justified">
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/add_products/{{ id }}">Add Products</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+    <li class="active"><a href="#">History</a></li>
+</ul>
+-->
+<div class="container-fluid">
+    <h1>ORDER HISTORY</h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <table class="table table-hover table-bordered" id="table">
+                <thead>
+                <tr>
+                    <th scope="col">Invoice No.</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Date (mm/dd/yyyy)</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in info %}
+                    <tr>
+                        <td><a href="http://127.0.0.1:5000/api/v1/vendor_invoice/info/{{ id }}/{{ item['invoice_id'] }}">{{ item['invoice_id'] }}</a></td>
+                        <td>{{ item['total_cost'] }}</td>
+                        <td>{{ item['date_placed'] }}</td>
+                        <td>{{ item['payment_status'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+</body>
+</html>

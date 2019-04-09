@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.css">
+
+
+</head>
+<body>
+<ul class="nav nav-pills nav-justified">
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+    <li class="active"><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
+</ul>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6">
+             <h2>INVOICE</h2>
+        </div>
+        <div class="col-lg-6" style="text-align: center">
+            <h4><b>Invoice No:</b> {{ invoice_id }}</h4>
+            <h4><b>Date:</b> {{ info['order_info']['date_placed'] }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <h4><b>Warehouse:</b></h4>
+            <p>
+                {{ info['warehouse_info']['name'] }}<br>
+                {{ info['warehouse_info']['street'] }} street<br>
+                {{ info['warehouse_info']['city'] }}<br>
+                {{ info['warehouse_info']['state'] }}, {{ info['warehouse_info']['zip_code'] }}
+            </p>
+        </div>
+        <div class="col-lg-6" style="text-align: center">
+            <h4><b>Vendor:</b></h4>
+            <p>
+                {{ info['vendor_info']['vendor_name'] }}<br>
+                {{ info['vendor_info']['street'] }} street<br>
+                {{ info['vendor_info']['city'] }}<br>
+                {{ info['vendor_info']['state'] }}, {{ info['warehouse_info']['zip_code'] }}
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-hover table-bordered" id="table">
+            <thead>
+            <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Net Price</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>[{{ info['order_info']['category'] }}] {{ info['order_info']['brand'] }}, {{ info['order_info']['product_name'] }}</td>
+                <td>{{ info['order_info']['price'] }}</td>
+                <td>{{ info['order_info']['quantity'] }}</td>
+                <td>{{ info['order_info']['total_cost'] }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row">
+        <h4><b>Status:</b> {{ info['order_info']['payment_status'] }}</h4>
+    </div>
+</div>
+
+
+<script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
+</body>
+</html>

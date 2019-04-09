@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+</head>
+<body>
+
+    
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">IMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="nav navbar-nav">
+                <li><a href="/api/v1/vendor/home/{{ id }}">Home</a></li>
+                <li class="active"><a href="#">Add Products</a></li>
+                <li><a href="/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+                <li><a href="/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+                <li><a href="/api/v1/order/vendor_history/{{ id }}">History</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>    
+
+<!-- 
+<ul class="nav nav-pills nav-justified">
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
+    <li class="active"><a href="#">Add Products</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+    <li><a href="http://127.0.0.1:5000/api/v1/order/vendor_history/{{ id }}">History</a></li>
+</ul>
+-->
+<div class="container-fluid">
+    <h1>ADD PRODUCTS</h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <form action="http://127.0.0.1:5000/api/v1/add_products/{{ id }}" method="post">
+                <div class="form-group">
+                    <label for="category_input">Category</label>
+                    <select class="form-control" name="category" id="category">
+                        <option disabled selected value> -- select an option -- </option>
+                        <option value="laptop">Laptop</option>
+                        <option value="tv">TV</option>
+                        <option value="refrigerator">Refrigerator</option>
+                        <option value="phone">Phone</option>
+                        <option value="shoe">Shoe</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="brand_input">Brand</label>
+                    <select class="form-control" id="brand" name="brand">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="product_input">Product</label>
+                    <select class="form-control" id="product" name="product">
+                        <option disabled selected value> -- select an option -- </option>
+                    </select>
+                </div>
+
+                <div class="form-group row">
+                    <label for="quantity_input" class="col-sm-2 col-form-label col-form-label-sm">Quantity</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="quantity" name="quantity" placeholder="Quantity" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="price_input" class="col-sm-2 col-form-label col-form-label-sm">Price</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control form-control-sm" id="price" name="price" placeholder="Price" disabled>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary mb-2" id="submit" disabled>Place Order</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+
+<script>
+
+    $(document).ready(function(){
+        $('#category').on('change', function() {
+            $('#brand').prop('selectedIndex',0);
+            $('#product').prop('selectedIndex',0);
+            $('#vendor').prop('selectedIndex', 0);
+            var category = $('#category').val();
+            $.ajax({
+                type: "GET",
+                url: 'http://127.0.0.1:5000/api/v1/brand/info/' + category,
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#brand'),
+                        '-- select an option --'
+                    )
+                }
+            })
+        });
+    });
+
+    $(document).ready(function(){
+        $('#brand').on('change', function() {
+            $('#product').prop('selectedIndex',0);
+            $('#vendor').prop('selectedIndex', 0);
+            var category = $('#category').val();
+            var brand = $('#brand').val();
+            $.ajax({
+                type: "GET",
+                url: 'http://127.0.0.1:5000/api/v1/product_drop_down/info/' + category + '/' + brand,
+                success: function (data) {
+                    helpers.buildDropdown(data,
+                        $('#product'),
+                        '-- select an option --'
+                    )
+                }
+            })
+        });
+    });
+    $(document).ready(function(){
+        $('#product').on('change', function() {
+            $('#quantity').attr('disabled', false);
+        });
+    });
+    $(document).ready(function(){
+        $('#quantity').on('input', function() {
+            $('#price').attr('disabled', false);
+        });
+    });
+
+    $(document).ready(function(){
+        $('#price').on('input', function() {
+            var category = $('#category').val();
+            var brand = $('#brand').val();
+            var product = $('#product').val();
+            var quantity = parseInt($('#quantity').val());
+            var price = parseFloat($('#price').val());
+            $('#submit').attr('disabled', false);
+        });
+    });
+
+
+    var helpers =
+    {
+        buildDropdown: function(result, dropdown, emptyMessage)
+        {
+            // Remove current options
+            dropdown.html('');
+            // Add the empty option with the empty message
+            dropdown.append('<option value="">' + emptyMessage + '</option>');
+            // Check result isnt empty
+            if(result != '')
+            {
+                // Loop through each of the results and append the option to the dropdown
+                $.each(result, function(k, v) {
+                    dropdown.append('<option value="' + v.id + '">' + v.name + '</option>');
+                });
+            }
+        }
+    }
+</script>
+
+</html>
