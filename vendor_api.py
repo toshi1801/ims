@@ -1,5 +1,4 @@
 import constants
-import sql_queries as sq
 import vendor_sql_queries as vsq
 import uuid
 import datetime
