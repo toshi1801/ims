@@ -40,29 +40,20 @@
 </nav>    
 
     
-<!--    
-<ul class="nav nav-pills nav-justified">
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/add_products/{{ id }}">Add Products</a></li>
-    <li class="active"><a href="#">Payment</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/order/vendor_history/{{ id }}">History</a></li>
-</ul>
--->
 <div class="container-fluid">
     <h1>PAYMENT PROFILE</h1>
     <div class="row">
         <div class="col-lg-6">
-            <h5>TYPE: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ type }}</a></h5>
-            <h5>ACCOUNT NAME: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ account_name }}</a></h5>
-            <h5>ACCOUNT NUMBER: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ account_number }}</a></h5>
-            <h5>ROUTING NUMBER: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ routing_number }}</a></h5>
-            <h5>PAYPAL ID: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ paypal_id }}</a></h5>
-            <h5>VENMO ID: <a href="http://127.0.0.1:5000/api/v1/vendor/payment/info/{{ id }}">{{ venmo_id }}</a></h5>
+            <h5>TYPE: {{ type }}</h5>
+            <h5>ACCOUNT NAME: {{ account_name }}</h5>
+            <h5>ACCOUNT NUMBER: {{ account_number }}</h5>
+            <h5>ROUTING NUMBER: {{ routing_number }}</h5>
+            <h5>PAYPAL ID: {{ paypal_id }}</h5>
+            <h5>VENMO ID: {{ venmo_id }}</h5>
         </div>
         <div class="col-lg-6" style="text-align: center">
         <div class="col-lg-6" style="text-align: center">
-            <h3>VENDOR: <a href="http://127.0.0.1:5000/api/v1/vendor/home/info/{{ id }}">{{ vendor_name }}</a></h3>
+            <h3>VENDOR: <a href="/api/v1/vendor/profile/{{ id }}">{{ vendor_name }}</a></h3>
         </div>
     </div>
 </div>

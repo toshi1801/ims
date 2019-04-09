@@ -40,31 +40,21 @@
 </nav>    
 
     
-<!--    
-<ul class="nav nav-pills nav-justified">
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/add_products/{{ id }}">Add Products</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
-    <li class="active"><a href="#">Profile</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/order/vendor_history/{{ id }}">History</a></li>
-</ul>
--->
-
 <div class="container-fluid">
     <h1>PROFILE</h1>
     <div class="row">
         <div class="col-lg-6">
-            <h5>VENDOR ID: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ vendor_id }}</a></h5>
-            <h5>VENDOR NAME: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ vendor_name }}</a></h5>
-            <h5>MOBILE: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ mobile }}</a></h5>
-            <h5>STREET: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ street }}</a></h5>
-            <h5>CITY: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ city }}</a></h5>
-            <h5>STATE: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ state }}</a></h5>
-            <h5>ZIPCODE: <a href="http://127.0.0.1:5000/api/v1/vendor/profile/info/{{ id }}">{{ zip }}</a></h5>
+            <h5>VENDOR ID: {{ vendor_id }}</h5>
+            <h5>VENDOR NAME: {{ vendor_name }}</h5>
+            <h5>MOBILE: {{ mobile }}</h5>
+            <h5>STREET: {{ street }}</h5>
+            <h5>CITY: {{ city }}</h5>
+            <h5>STATE: {{ state }}</h5>
+            <h5>ZIPCODE: {{ zip }}</h5>
         </div>
         <div class="col-lg-6" style="text-align: center">
         <div class="col-lg-6" style="text-align: center">
-            <h3>VENDOR: <a href="http://127.0.0.1:5000/api/v1/vendor/home/info/{{ id }}">{{ vendor_name }}</a></h3>
+            <h3>VENDOR: <a href="/api/v1/vendor/profile/{{ id }}">{{ vendor_name }}</a></h3>
         </div>
     </div>
 </div>

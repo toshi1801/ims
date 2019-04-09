@@ -17,13 +17,28 @@
 
 </head>
 <body>
-<ul class="nav nav-pills nav-justified">
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
-    <li class="active"><a href="http://127.0.0.1:5000/api/v1/order/history/{{ id }}">History</a></li>
-</ul>
 
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">IMS</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navBar">
+            <ul class="nav navbar-nav">
+                <li><a href="/api/v1/vendor/home/{{ id }}">Home</a></li>
+                <li><a href="/api/v1/add_products/{{ id }}">Add Products</a></li>
+                <li><a href="/api/v1/vendor/payment/{{ id }}">Payment</a></li>
+                <li><a href="/api/v1/vendor/profile/{{ id }}">Profile</a></li>
+                <li class="active"><a href="/api/v1/order/history/{{ id }}">History</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>    
+
+    
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-6">
@@ -74,9 +89,11 @@
             </tbody>
         </table>
     </div>
+    <!--
     <div class="row">
         <h4><b>Status:</b> {{ info['order_info']['payment_status'] }}</h4>
     </div>
+    -->
 </div>
 
 

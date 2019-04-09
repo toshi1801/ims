@@ -37,20 +37,11 @@
     </div>
 </nav>    
 
-<!-- 
-<ul class="nav nav-pills nav-justified">
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/home/{{ id }}">Home</a></li>
-    <li class="active"><a href="#">Add Products</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/payment/{{ id }}">Payment</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/vendor/profile/{{ id }}">Profile</a></li>
-    <li><a href="http://127.0.0.1:5000/api/v1/order/vendor_history/{{ id }}">History</a></li>
-</ul>
--->
 <div class="container-fluid">
     <h1>ADD PRODUCTS</h1>
     <div class="row">
         <div class="col-lg-6">
-            <form action="http://127.0.0.1:5000/api/v1/add_products/{{ id }}" method="post">
+            <form action="/api/v1/add_products/{{ id }}" method="post">
                 <div class="form-group">
                     <label for="category_input">Category</label>
                     <select class="form-control" name="category" id="category">
@@ -105,7 +96,7 @@
             var category = $('#category').val();
             $.ajax({
                 type: "GET",
-                url: 'http://127.0.0.1:5000/api/v1/brand/info/' + category,
+                url: '/api/v1/brand/info/' + category,
                 success: function (data) {
                     helpers.buildDropdown(data,
                         $('#brand'),
@@ -124,7 +115,7 @@
             var brand = $('#brand').val();
             $.ajax({
                 type: "GET",
-                url: 'http://127.0.0.1:5000/api/v1/product_drop_down/info/' + category + '/' + brand,
+                url: '/api/v1/product_drop_down/info/' + category + '/' + brand,
                 success: function (data) {
                     helpers.buildDropdown(data,
                         $('#product'),
