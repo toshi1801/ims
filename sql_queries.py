@@ -57,3 +57,6 @@ admin_query_17 = "select distinct(category) from product"
 
 admin_query_18 = "insert into product (product_id, product_name, brand, category, product_info) " \
                  "values ('{}','{}','{}','{}','{}')"
+
+admin_query_19 = "select o.invoice_id, p.product_name, p.brand, p.category, o.quantity from orders o, product p " \
+                 "where o.product_id=p.product_id and o.admin_id='{}' and o.payment_status='in progress';"

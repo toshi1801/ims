@@ -69,6 +69,7 @@ def admin_home(admin_id):
         page_info = json.loads(page_info)
         return render_template('admin_home.html',
                                products=json.dumps(page_info['products']),
+                               ordered=page_info['ordered_products'],
                                admin_name=page_info['admin_name'],
                                id=admin_id,
                                t_budget=page_info['total_budget'],

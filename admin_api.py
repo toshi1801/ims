@@ -16,6 +16,10 @@ def fetch_admin_home_info(admin_id):
     products = helpers.generate_json_results(records)
     home_page_info['products'] = products
 
+    records = conn.execute(sq.admin_query_19.format(admin_id))
+    ordered_products = helpers.generate_json_results(records)
+    home_page_info['ordered_products'] = ordered_products
+
     records = conn.execute(sq.admin_query_2.format(admin_id))
     admin_info = helpers.generate_json_results(records)[0]
     admin_name = admin_info[constants.ADMIN_NAME]

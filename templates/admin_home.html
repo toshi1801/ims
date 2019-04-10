@@ -59,6 +59,33 @@
             <p>Remaining Budget: {{ r_budget }}</p>
         </div>
     </div>
+    <h1>ORDERED</h1>
+    <div class="row">
+        <div class="col-lg-6">
+            <table class="table table-hover table-bordered" id="table2">
+                <thead>
+                <tr>
+                    <th scope="col">Invoice</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in ordered %}
+                    <tr>
+                        <td><a href="/api/v1/invoice/info/{{ id }}/{{ item['invoice_id'] }}">{{ item['invoice_id'] }}</a></td>
+                        <td>{{ item['product_name'] }}</td>
+                        <td>{{ item['brand'] }}</td>
+                        <td>{{ item['category'] }}</td>
+                        <td>{{ item['quantity'] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 <script src="https://unpkg.com/bootstrap-table@1.14.2/dist/bootstrap-table.min.js"></script>
 </body>
